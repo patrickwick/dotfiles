@@ -1,0 +1,19 @@
+[legacy/profiles:]
+default='4834d949-d394-4bf2-a37d-a2fd1fb88f63'
+list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '4834d949-d394-4bf2-a37d-a2fd1fb88f63']
+
+[legacy/profiles:/:4834d949-d394-4bf2-a37d-a2fd1fb88f63]
+background-color='rgb(38,38,38)'
+bold-is-bright=false
+foreground-color='rgb(211,215,207)'
+palette=['rgb(33,37,38)', 'rgb(207,43,42)', 'rgb(150,152,51)', 'rgb(217,154,59)', 'rgb(66,131,133)', 'rgb(179,97,133)', 'rgb(99,157,109)', 'rgb(167,152,133)', 'rgb(145,131,118)', 'rgb(255,77,63)', 'rgb(183,189,65)', 'rgb(252,191,74)', 'rgb(128,164,152)', 'rgb(214,132,154)', 'rgb(137,193,128)', 'rgb(235,220,179)']
+scrollbar-policy='never'
+use-theme-colors=false
+use-theme-transparency=false
+use-transparent-background=false
+visible-name='gruvbox'
+
+[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(43,43,43)'
+foreground-color='rgb(211,215,207)'
+use-theme-colors=false
