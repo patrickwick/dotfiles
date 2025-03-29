@@ -5,7 +5,7 @@
 keybind = ctrl+enter=toggle_fullscreen
 keybind = alt+enter=toggle_fullscreen
 
-theme = GruvboxDark
+font-family = Ubuntu Mono
 
 quick-terminal-animation-duration = 0
 # window-decoration = none
@@ -13,3 +13,4 @@ quick-terminal-animation-duration = 0
 gtk-titlebar-hide-when-maximized = true
 gtk-single-instance = false
 
+theme = GruvboxDark
