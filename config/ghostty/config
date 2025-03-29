@@ -1,0 +1,15 @@
+# Run `ghostty +show-config --default --docs`.
+# Documentation: https://ghostty.org/docs/config.
+# Reload configuration using Control + Shift + cimma
+
+keybind = ctrl+enter=toggle_fullscreen
+keybind = alt+enter=toggle_fullscreen
+
+theme = GruvboxDark
+
+quick-terminal-animation-duration = 0
+# window-decoration = none
+
+gtk-titlebar-hide-when-maximized = true
+gtk-single-instance = false
+

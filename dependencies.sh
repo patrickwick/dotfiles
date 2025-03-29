@@ -11,6 +11,7 @@ apt install luarocks
 apt install ripgrep
 
 snap install nvim
+snap install ghostty --classic
 
 # fish as default shell
 apt install fish
