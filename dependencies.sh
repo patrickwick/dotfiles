@@ -20,3 +20,8 @@ chsh -s $(which fish)
 # zigup (not tested)
 # mkdir -p ~/zigup
 # curl -L https://github.com/marler8997/zigup/releases/latest/download/zigup-x86_64-linux.tar.gz | tar -xz ~/zigup/zigup
+
+# zls
+# git clone https://github.com/zigtools/zls ~/zls
+# cd ~/zls
+# zig build -Doptimize=ReleaseSafe

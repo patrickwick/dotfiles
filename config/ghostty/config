@@ -5,7 +5,8 @@
 keybind = ctrl+enter=toggle_fullscreen
 keybind = alt+enter=toggle_fullscreen
 
-font-family = Ubuntu Mono
+font-family = Liberation Mono
+font-size = 14
 
 quick-terminal-animation-duration = 0
 # window-decoration = none

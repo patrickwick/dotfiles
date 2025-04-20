@@ -28,6 +28,8 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+
+
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -43,6 +45,10 @@ require('lazy').setup({
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
     },
+  },
+
+  {
+    'ziglang/zig',
   },
 
   {
@@ -230,6 +236,7 @@ require('lazy').setup({
   require 'custom.plugins.debug',
 
   require 'custom.plugins.autoformat',
+
 }, {})
 
 -- [[ Setting options ]]
@@ -471,7 +478,7 @@ end, 0)
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
-local on_attach = function(_, bufnr)
+local on_attach_lsp = function(_, bufnr)
   -- NOTE: Remember that lua is a real programming language, and as such it is possible
   -- to define small helper and utility functions so you don't have to repeat yourself
   -- many times.
@@ -562,6 +569,52 @@ local servers = {
   },
 }
 
+-- ZLS: Zig language server.
+-- TODO(pwr): integrate code action, goto definition, etc.
+local lspconfig = require('lspconfig')
+lspconfig.zls.setup {
+  on_attach = on_attach_lsp,
+
+  -- Omit the following line if `zls` is in your PATH:
+  -- => install via dependencies.sh script checked into dotfiles (build from source).
+  cmd = { '/home/pwr/zls/zig-out/bin/zls' },
+  settings = {
+    -- See https://github.com/zigtools/zls/blob/master/src/Config.zig.
+    zls = {
+      -- Omit the following line if `zig` is in your PATH:
+      -- zig_exe_path = '~/zig/master',
+
+      enable_snippets = false,
+      enable_build_on_save = true,
+      enable_argument_placeholders = true,
+      completion_label_details = true,
+      -- enable_build_on_save: ?bool = null,
+      -- build_on_save_args: []const []const u8 = &.{},
+      -- semantic_tokens = "partial", -- nvim already provides basic syntax highlighting.
+      inlay_hints_show_variable_type_hints = true,
+      inlay_hints_show_struct_literal_field_type = true,
+      inlay_hints_show_parameter_name = true,
+      inlay_hints_show_builtin = true,
+      inlay_hints_exclude_single_argument = true,
+      inlay_hints_hide_redundant_param_names = false,
+      inlay_hints_hide_redundant_param_names_last_token = false,
+      force_autofix = false,
+      warn_style = true,
+      highlight_global_var_declarations = true,
+      skip_std_references = false,
+      prefer_ast_check_as_child_process = true,
+      -- builtin_path: ?[]const u8 = null,
+      -- zig_lib_path: ?[]const u8 = null,
+      -- zig_exe_path: ?[]const u8 = null,
+      -- build_runner_path: ?[]const u8 = null,
+      -- global_cache_path: ?[]const u8 = null,
+    }
+  }
+}
+
+-- Don't show parse errors in a separate window.
+vim.g.zig_fmt_parse_errors = 0
+
 -- Setup neovim lua configuration
 require('neodev').setup()
 
@@ -581,7 +634,7 @@ mason_lspconfig.setup_handlers {
   function(server_name)
     require('lspconfig')[server_name].setup {
       capabilities = capabilities,
-      on_attach = on_attach,
+      on_attach = on_attach_lsp,
       settings = servers[server_name],
       filetypes = (servers[server_name] or {}).filetypes,
     }
