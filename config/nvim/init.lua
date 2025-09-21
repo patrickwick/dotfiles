@@ -304,6 +304,10 @@ local function install_plugins()
 						)
 						map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
 
+						vim.keymap.set("i", "<c-space>", function()
+							vim.lsp.completion.get()
+						end)
+
 						-- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
 						---@param client vim.lsp.Client
 						---@param method vim.lsp.protocol.Method
@@ -357,10 +361,6 @@ local function install_plugins()
 							})
 						end
 
-						-- The following code creates a keymap to toggle inlay hints in your
-						-- code, if the language server you are using supports them
-						--
-						-- This may be unwanted, since they displace some of your code
 						if
 							client
 							and client_supports_method(
