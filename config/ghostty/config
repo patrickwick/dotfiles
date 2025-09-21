@@ -14,4 +14,4 @@ quick-terminal-animation-duration = 0
 gtk-titlebar-hide-when-maximized = true
 gtk-single-instance = false
 
-theme = GruvboxDark
+theme = Gruvbox Dark
