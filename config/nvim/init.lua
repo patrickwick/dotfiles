@@ -124,16 +124,17 @@ local function install_plugins()
     -- LSP Configuration & Plugins
     {
       "neovim/nvim-lspconfig",
-      branch = "v2.5.0",
       dependencies = {
-        -- FIXME(pwr): update to mason v2.x
-        -- Automatically install LSPs to stdpath for neovim
-        { "williamboman/mason.nvim",           branch = "v1.x" },
-        { "williamboman/mason-lspconfig.nvim", branch = "v1.x" },
+        -- Automatically install LSPs and related tools to stdpath for Neovim
+        -- Mason must be loaded before its dependents so we need to set it up here.
+        -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
+        { "mason-org/mason.nvim", opts = {} },
+        "mason-org/mason-lspconfig.nvim",
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
 
         -- Useful status updates for LSP
         -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-        { "j-hui/fidget.nvim",                 opts = {} },
+        { "j-hui/fidget.nvim",    opts = {} },
 
         -- Additional lua configuration, makes nvim stuff amazing!
         "folke/neodev.nvim",
@@ -626,7 +627,6 @@ vim.lsp.config("zls", {
     },
   },
 })
-
 -- Don't show parse errors in a separate window.
 vim.g.zig_fmt_parse_errors = 0
 
@@ -639,21 +639,16 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
 -- Ensure the servers above are installed
 local mason_lspconfig = require("mason-lspconfig")
-
 mason_lspconfig.setup({
-  ensure_installed = vim.tbl_keys(servers),
-  automatic_installation = {},
-})
-
-mason_lspconfig.setup_handlers({
-  function(server_name)
-    vim.lsp.config(server_name, {
-      capabilities = capabilities,
-      on_attach = on_attach_lsp,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    })
-  end,
+  ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+  automatic_installation = false,
+  handlers = {
+    function(server_name)
+      local server = servers[server_name] or {}
+      server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+      require("lspconfig")[server_name].setup(server)
+    end,
+  },
 })
 
 -- [[ Configure nvim-cmp ]]
@@ -710,6 +705,3 @@ cmp.setup({
     { name = "path" },
   },
 })
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
