@@ -586,11 +586,8 @@ local servers = {
   },
 }
 
--- FIXME(pwr): require("lspconfig") is deprecated, use vim.lsp.config instead.
--- vim.lsp.config('zls', {
 -- ZLS: Zig language server.
-local lspconfig = require("lspconfig")
-lspconfig.zls.setup({
+vim.lsp.config("zls", {
   on_attach = on_attach_lsp,
 
   -- Omit the following line if `zls` is in your PATH:
@@ -650,8 +647,7 @@ mason_lspconfig.setup({
 
 mason_lspconfig.setup_handlers({
   function(server_name)
-    -- FIXME(pwr): require("lspconfig") is deprecated, use vim.lsp.config instead.
-    require("lspconfig")[server_name].setup({
+    vim.lsp.config(server_name, {
       capabilities = capabilities,
       on_attach = on_attach_lsp,
       settings = servers[server_name],
