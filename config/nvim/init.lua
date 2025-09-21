@@ -289,43 +289,19 @@ local function install_plugins()
 							vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 						end
 
-						-- TODO(pwr): update key bindings as I had them before.
-						-- Rename the variable under your cursor.
-						--  Most Language Servers support renaming across files, etc.
-						map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
-
-						-- Execute a code action, usually your cursor needs to be on top of an error
-						-- or a suggestion from your LSP for this to activate.
-						map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
-
-						-- Find references for the word under your cursor.
-						map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-
-						-- Jump to the implementation of the word under your cursor.
-						--  Useful when your language has ways of declaring types without an actual implementation.
-						map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-
-						-- Jump to the definition of the word under your cursor.
-						--  This is where a variable was first declared, or where a function is defined, etc.
-						--  To jump back, press <C-t>.
-						map("grd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-
-						-- WARN: This is not Goto Definition, this is Goto Declaration.
-						--  For example, in C this would take you to the header.
-						map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-
-						-- Fuzzy find all the symbols in your current document.
-						--  Symbols are things like variables, functions, types, etc.
-						map("gO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
-
-						-- Fuzzy find all the symbols in your current workspace.
-						--  Similar to document symbols, except searches over your entire project.
-						map("gW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
-
-						-- Jump to the type of the word under your cursor.
-						--  Useful when you're not sure what type a variable is and you want to see
-						--  the definition of its *type*, not where it was *defined*.
-						map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+						map("<Space>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+						map("ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
+						map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+						map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+						map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+						map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+						map("<Space>ds", require("telescope.builtin").lsp_document_symbols, "Open [D]ocument [S]ymbols")
+						map(
+							"<Sapce>ws",
+							require("telescope.builtin").lsp_dynamic_workspace_symbols,
+							"Open [W]orkspace [S]ymbols"
+						)
+						map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
 
 						-- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
 						---@param client vim.lsp.Client
@@ -625,16 +601,8 @@ local function install_plugins()
 
 				snippets = { preset = "luasnip" },
 
-				-- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-				-- which automatically downloads a prebuilt binary when enabled.
-				--
-				-- By default, we use the Lua implementation instead, but you may enable
-				-- the rust implementation via `'prefer_rust_with_warning'`
-				--
-				-- See :h blink-cmp-config-fuzzy for more information
 				fuzzy = { implementation = "lua" },
 
-				-- Shows a signature help window while you type arguments for a function
 				signature = { enabled = true },
 			},
 		},
@@ -647,29 +615,17 @@ local function install_plugins()
 			opts = { signs = false },
 		},
 
-		{ -- Collection of various small independent plugins/modules
+		{ -- Collection of various small independent plugins/modules, see https://github.com/echasnovski/mini.nvim
 			"echasnovski/mini.nvim",
 			config = function()
 				-- Better Around/Inside textobjects
-				--
-				-- Examples:
-				--  - va)  - [V]isually select [A]round [)]paren
-				--  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-				--  - ci'  - [C]hange [I]nside [']quote
 				require("mini.ai").setup({ n_lines = 500 })
 
 				-- Add/delete/replace surroundings (brackets, quotes, etc.)
-				--
-				-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-				-- - sd'   - [S]urround [D]elete [']quotes
-				-- - sr)'  - [S]urround [R]eplace [)] [']
 				require("mini.surround").setup()
 
 				-- Simple and easy statusline.
-				--  You could remove this setup call if you don't like it,
-				--  and try some other statusline plugin
 				local statusline = require("mini.statusline")
-				-- set use_icons to true if you have a Nerd Font
 				statusline.setup({ use_icons = vim.g.have_nerd_font })
 
 				-- You can configure sections in the statusline by overriding their
@@ -679,11 +635,9 @@ local function install_plugins()
 				statusline.section_location = function()
 					return "%2l:%-2v"
 				end
-
-				-- ... and there is more!
-				--  Check out: https://github.com/echasnovski/mini.nvim
 			end,
 		},
+
 		{ -- Highlight, edit, and navigate code
 			"nvim-treesitter/nvim-treesitter",
 			build = ":TSUpdate",
@@ -703,8 +657,7 @@ local function install_plugins()
 					"vim",
 					"vimdoc",
 				},
-				-- Autoinstall languages that are not installed
-				auto_install = true,
+				auto_install = false,
 				highlight = {
 					enable = true,
 					-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
@@ -714,23 +667,8 @@ local function install_plugins()
 				},
 				indent = { enable = true, disable = { "ruby" } },
 			},
-			-- There are additional nvim-treesitter modules that you can use to interact
-			-- with nvim-treesitter. You should go explore a few and see what interests you:
-			--
-			--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-			--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-			--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 		},
 
-		-- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-		-- init.lua. If you want these files, they are in the repository, so you can just download them and
-		-- place them in the correct locations.
-
-		-- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-		--
-		--  Here are some example plugins that I've included in the Kickstart repository.
-		--  Uncomment any of the lines below to enable them (you will need to restart nvim).
-		--
 		-- require 'kickstart.plugins.debug',
 		-- require 'kickstart.plugins.indent_line',
 		-- require 'kickstart.plugins.lint',
@@ -743,11 +681,6 @@ local function install_plugins()
 		--
 		--  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
 		-- { import = 'custom.plugins' },
-		--
-		-- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
-		-- Or use telescope!
-		-- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
-		-- you can continue same window with `<space>sr` which resumes last telescope search
 	}, {
 		ui = {
 			-- If you are using a Nerd Font: set icons to an empty table which will use the
