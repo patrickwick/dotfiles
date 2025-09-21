@@ -1,5 +1,5 @@
 -- This configuration is based on kickstart https://github.com/nvim-lua/kickstart.nvim
-io.write("init.lua")
+io.write("Loading init.lua")
 
 -- Set <space> as the leader key (:help mapleader)
 -- NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
@@ -58,6 +58,7 @@ local function basic_keymaps()
 	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 	vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
+	-- TODO(pwr): add go to next hunk again "[c"
 	vim.keymap.set("n", "[d", function()
 		vim.diagnostic.jump({ count = -1 })
 	end, { desc = "Previous diagnostic message" })
@@ -297,7 +298,7 @@ local function install_plugins()
 						map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 						map("<Space>ds", require("telescope.builtin").lsp_document_symbols, "Open [D]ocument [S]ymbols")
 						map(
-							"<Sapce>ws",
+							"<Space>ws",
 							require("telescope.builtin").lsp_dynamic_workspace_symbols,
 							"Open [W]orkspace [S]ymbols"
 						)
@@ -389,7 +390,20 @@ local function install_plugins()
 							[vim.diagnostic.severity.HINT] = "󰌶 ",
 						},
 					} or {},
-					virtual_text = {
+					-- virtual_text = {
+					-- 	source = "if_many",
+					-- 	spacing = 2,
+					-- 	format = function(diagnostic)
+					-- 		local diagnostic_message = {
+					-- 			[vim.diagnostic.severity.ERROR] = diagnostic.message,
+					-- 			[vim.diagnostic.severity.WARN] = diagnostic.message,
+					-- 			[vim.diagnostic.severity.INFO] = diagnostic.message,
+					-- 			[vim.diagnostic.severity.HINT] = diagnostic.message,
+					-- 		}
+					-- 		return diagnostic_message[diagnostic.severity]
+					-- 	end,
+					-- },
+					virtual_lines = {
 						source = "if_many",
 						spacing = 2,
 						format = function(diagnostic)
@@ -403,6 +417,7 @@ local function install_plugins()
 						end,
 					},
 				})
+				vim.diagnostic.enable()
 
 				-- LSP servers and clients are able to communicate to each other what features they support.
 				--  By default, Neovim doesn't support everything that is in the LSP specification.
