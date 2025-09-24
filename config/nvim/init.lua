@@ -58,13 +58,12 @@ local function basic_keymaps()
 	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 	vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
-	-- TODO(pwr): add go to next hunk again "[c"
 	vim.keymap.set("n", "[d", function()
 		vim.diagnostic.jump({ count = -1 })
 	end, { desc = "Previous diagnostic message" })
 
 	vim.keymap.set("n", "]d", function()
-		vim.diagnostic.jump({ count = -1 })
+		vim.diagnostic.jump({ count = 1 })
 	end, { desc = "Next diagnostic message" })
 
 	-- CTRL+<hjkl> to switch between windows (:help wincmd)
@@ -199,6 +198,7 @@ local function install_plugins()
 			},
 		},
 
+		-- TODO(pwr): which does not display "[" / "]" next/previous commands.
 		{ -- Useful plugin to show you pending keybinds.
 			"folke/which-key.nvim",
 			event = "VimEnter",
@@ -355,6 +355,9 @@ local function install_plugins()
 							vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 						end
 
+						-- TODO(pwr): keymappings:
+						-- * "[[" does not behave as expected: should go to next struct.
+						-- *
 						map("<Space>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 						map("ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
 						map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -455,20 +458,8 @@ local function install_plugins()
 							[vim.diagnostic.severity.HINT] = "󰌶 ",
 						},
 					} or {},
-					-- virtual_text = {
-					-- 	source = "if_many",
-					-- 	spacing = 2,
-					-- 	format = function(diagnostic)
-					-- 		local diagnostic_message = {
-					-- 			[vim.diagnostic.severity.ERROR] = diagnostic.message,
-					-- 			[vim.diagnostic.severity.WARN] = diagnostic.message,
-					-- 			[vim.diagnostic.severity.INFO] = diagnostic.message,
-					-- 			[vim.diagnostic.severity.HINT] = diagnostic.message,
-					-- 		}
-					-- 		return diagnostic_message[diagnostic.severity]
-					-- 	end,
-					-- },
-					virtual_lines = {
+					-- NOTE: use virtual_lines for alternative visualization that display the results underneath, not to the right.
+					virtual_text = {
 						source = "if_many",
 						spacing = 2,
 						format = function(diagnostic)
@@ -632,6 +623,7 @@ local function install_plugins()
 			--- @module 'blink.cmp'
 			--- @type blink.cmp.Config
 			opts = {
+				-- TODO(pwr): add <CR> (enter) as completion alternative to <c-y>?
 				keymap = {
 					-- 'default' (recommended) for mappings similar to built-in completions
 					--   <c-y> to accept ([y]es) the completion.
